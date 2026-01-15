@@ -109,7 +109,6 @@ const Display: React.FC = () => {
         {/* Header */}
         <Paper
           elevation={0}
-          className="glass-header"
           sx={{
             background: `linear-gradient(135deg, ${tvTheme.palette.primary.main} 0%, ${tvTheme.palette.primary.dark} 100%)`,
             color: 'white',
@@ -128,13 +127,29 @@ const Display: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <Box>
-              <Typography variant="h3" fontWeight={800} sx={{ letterSpacing: '-0.02em', mb: 1, textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
-                RBU DIGITAL NOTICE BOARD
-              </Typography>
-              <Typography variant="h5" sx={{ opacity: 0.9, fontWeight: 500, letterSpacing: '0.02em' }}>
-                Smart Information Display System
-              </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+              <Box
+                component="img"
+                src="/logo.png"
+                alt="RBU Logo"
+                sx={{
+                  height: 80,
+                  width: 80,
+                  objectFit: 'contain',
+                  filter: 'brightness(1.2) drop-shadow(0 0 8px rgba(255,255,255,0.3))',
+                  bgcolor: 'white',
+                  borderRadius: '50%',
+                  p: 1,
+                }}
+              />
+              <Box>
+                <Typography variant="h3" fontWeight={800} sx={{ letterSpacing: '-0.02em', mb: 0.5, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                  RBU DIGITAL NOTICE BOARD
+                </Typography>
+                <Typography variant="h5" sx={{ opacity: 0.9, fontWeight: 500, letterSpacing: '0.02em' }}>
+                  Ramdeobaba University • Smart Information Display
+                </Typography>
+              </Box>
             </Box>
             <Box sx={{ textAlign: 'right' }}>
               <Typography variant="h2" fontWeight={800}>

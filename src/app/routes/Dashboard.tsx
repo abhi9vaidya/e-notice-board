@@ -71,8 +71,8 @@ const DashboardOverview: React.FC = () => {
   ];
 
   return (
-    <Box>
-      <Typography variant="h4" fontWeight={600} mb={4}>
+    <Box sx={{ maxWidth: '1600px' }}>
+      <Typography variant="h4" fontWeight={800} mb={4} sx={{ color: 'primary.main', letterSpacing: '-0.02em' }}>
         Dashboard Overview
       </Typography>
 
@@ -80,14 +80,16 @@ const DashboardOverview: React.FC = () => {
         {statCards.map((stat) => (
           <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={stat.label}>
             <Paper
+              className="glass-card"
               sx={{
                 p: 3,
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
-                transition: 'transform 0.2s',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
-                  transform: 'translateY(-4px)',
+                  transform: 'translateY(-6px)',
+                  boxShadow: '0 12px 30px rgba(0, 58, 109, 0.12)',
                 },
               }}
             >
@@ -397,8 +399,8 @@ const Dashboard: React.FC = () => {
           showMenuButton={isMobile}
         />
 
-        <Box sx={{ p: { xs: 2, md: 4, lg: 6 }, flex: 1, overflowY: 'auto' }}>
-          <Box sx={{ maxWidth: '1200px', mx: 'auto', width: '100%' }}>
+        <Box sx={{ p: { xs: 2, md: 3 }, flex: 1, overflowY: 'auto' }}>
+          <Box sx={{ width: '100%' }}>
             <Routes>
               <Route index element={<DashboardOverview />} />
               <Route path="create" element={<CreateNoticePage />} />

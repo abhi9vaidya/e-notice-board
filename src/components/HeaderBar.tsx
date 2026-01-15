@@ -35,8 +35,8 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         color: 'text.primary',
       }}
     >
-      <Toolbar sx={{ px: { xs: 2, md: 4, lg: 6 }, minHeight: 75 }}>
-        <Box sx={{ maxWidth: '1200px', mx: 'auto', width: '100%', display: 'flex', alignItems: 'center' }}>
+      <Toolbar sx={{ px: { xs: 2, md: 3 }, minHeight: 70 }}>
+        <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
           {showMenuButton && (
             <IconButton
               edge="start"

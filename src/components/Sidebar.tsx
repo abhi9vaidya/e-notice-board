@@ -12,6 +12,7 @@ import {
   Divider,
   Avatar,
   useTheme,
+  Tooltip,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,

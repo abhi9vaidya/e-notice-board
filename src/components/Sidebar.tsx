@@ -42,10 +42,10 @@ interface SidebarProps {
   variant?: 'permanent' | 'temporary';
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
-  open = true, 
+export const Sidebar: React.FC<SidebarProps> = ({
+  open = true,
   onClose,
-  variant = 'permanent' 
+  variant = 'permanent'
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -80,15 +80,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
           gap: 2,
           background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
           color: 'white',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
         }}
       >
-        <NoticeIcon sx={{ fontSize: 40 }} />
+        <Box
+          component="img"
+          src="/logo.png"
+          sx={{
+            width: 50,
+            height: 50,
+            objectFit: 'contain',
+            filter: 'brightness(1.1) drop-shadow(0 0 4px rgba(255, 255, 255, 0.3))',
+            bgcolor: 'white',
+            borderRadius: '50%',
+            p: 0.5,
+          }}
+        />
         <Box>
-          <Typography variant="h6" fontWeight={700}>
-            E-Notice Board
+          <Typography variant="h6" fontWeight={800} sx={{ lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+            RBU Notice
           </Typography>
-          <Typography variant="caption" sx={{ opacity: 0.9 }}>
-            Faculty Portal
+          <Typography variant="caption" sx={{ opacity: 0.85, fontWeight: 500 }}>
+            Smart Display Portal
           </Typography>
         </Box>
       </Box>
@@ -97,7 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <List sx={{ flex: 1, px: 2, py: 3 }}>
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
-          
+
           return (
             <ListItem key={item.path} disablePadding sx={{ mb: 1 }}>
               <ListItemButton

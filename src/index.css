@@ -6,10 +6,28 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 20% 96%;
     --foreground: 222.2 84% 4.9%;
-    --primary: 211 84% 40%;
+    --primary: 208 100% 21%; /* Navy Blue #003a6d */
+    --secondary: 27 91% 54%; /* Orange #f48120 */
     --primary-foreground: 210 40% 98%;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 58, 109, 0.1) !important;
+  }
+
+  .glass-header {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(0, 58, 109, 0.1) !important;
+  }
+
+  .grad-navy-orange {
+    background: linear-gradient(135deg, #003a6d 0%, #f48120 100%) !important;
   }
 
   * {

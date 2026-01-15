@@ -26,15 +26,16 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
 
   return (
     <AppBar
-      position="static"
+      position="sticky"
       elevation={0}
+      className="glass-header"
       sx={{
-        bgcolor: 'background.paper',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
+        top: 0,
+        zIndex: theme.zIndex.appBar,
+        color: 'text.primary',
       }}
     >
-      <Toolbar sx={{ px: { xs: 2, md: 3 } }}>
+      <Toolbar sx={{ px: { xs: 2, md: 3 }, minHeight: 70 }}>
         {showMenuButton && (
           <IconButton
             edge="start"
@@ -47,25 +48,46 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
           </IconButton>
         )}
 
-        <Typography
-          variant="h5"
-          color="text.primary"
-          fontWeight={600}
-          sx={{ flex: 1 }}
-        >
-          {title}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="University Logo"
+            sx={{
+              height: 48,
+              width: 48,
+              objectFit: 'contain',
+              display: { xs: 'none', sm: 'block' },
+            }}
+          />
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            sx={{
+              letterSpacing: '-0.01em',
+              background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            {title}
+          </Typography>
+        </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <IconButton
-            color="primary"
             onClick={() => navigate('/display')}
             title="Open TV Display"
             sx={{
-              bgcolor: 'primary.lighter',
+              bgcolor: 'rgba(0, 58, 109, 0.05)',
+              color: 'primary.main',
+              border: '1px solid',
+              borderColor: 'rgba(0, 58, 109, 0.1)',
               '&:hover': {
-                bgcolor: 'primary.light',
+                bgcolor: 'primary.main',
                 color: 'white',
+                transform: 'translateY(-2px)',
+                transition: 'all 0.2s',
               },
             }}
           >

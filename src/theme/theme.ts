@@ -4,38 +4,38 @@ const themeOptions: ThemeOptions = {
   palette: {
     mode: 'light',
     primary: {
-      main: '#1565c0',
-      light: '#42a5f5',
-      dark: '#0d47a1',
+      main: '#003a6d', // Navy Blue from logo
+      light: '#005494',
+      dark: '#002547',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#7b1fa2',
-      light: '#ae52d4',
-      dark: '#4a0072',
+      main: '#f48120', // Orange from logo
+      light: '#ff9d47',
+      dark: '#c46600',
       contrastText: '#ffffff',
     },
     background: {
-      default: '#f5f7fa',
+      default: '#f0f2f5',
       paper: '#ffffff',
     },
     text: {
-      primary: '#1a1a2e',
+      primary: '#001a33',
       secondary: '#64748b',
     },
     error: {
-      main: '#d32f2f',
+      main: '#e53935',
     },
     warning: {
-      main: '#ed6c02',
+      main: '#ff9100',
     },
     success: {
-      main: '#2e7d32',
+      main: '#43a047',
     },
     info: {
       main: '#0288d1',
     },
-    divider: 'rgba(0, 0, 0, 0.08)',
+    divider: 'rgba(0, 58, 109, 0.12)',
   },
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',

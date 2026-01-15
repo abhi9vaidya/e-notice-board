@@ -50,19 +50,22 @@ export const NoticeCard: React.FC<NoticeCardProps> = ({
 
   return (
     <Card
+      className="glass-card"
       sx={{
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-        transition: 'transform 0.2s, box-shadow 0.2s',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        border: '1px solid rgba(0, 58, 109, 0.08)',
         '&:hover': {
-          transform: tvMode ? 'none' : 'translateY(-4px)',
-          boxShadow: tvMode ? 3 : 6,
+          transform: tvMode ? 'none' : 'translateY(-8px)',
+          boxShadow: tvMode ? 3 : '0 20px 40px rgba(0, 58, 109, 0.12)',
+          borderColor: 'primary.light',
         },
         ...(notice.isPinned && {
-          borderLeft: '4px solid',
-          borderLeftColor: 'primary.main',
+          borderLeft: '5px solid',
+          borderLeftColor: 'secondary.main',
         }),
       }}
     >

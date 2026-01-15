@@ -397,12 +397,14 @@ const Dashboard: React.FC = () => {
           showMenuButton={isMobile}
         />
 
-        <Box sx={{ p: 3, flex: 1 }}>
-          <Routes>
-            <Route index element={<DashboardOverview />} />
-            <Route path="create" element={<CreateNoticePage />} />
-            <Route path="notices" element={<AllNoticesPage />} />
-          </Routes>
+        <Box sx={{ p: { xs: 2, md: 4, lg: 6 }, flex: 1, overflowY: 'auto' }}>
+          <Box sx={{ maxWidth: '1200px', mx: 'auto', width: '100%' }}>
+            <Routes>
+              <Route index element={<DashboardOverview />} />
+              <Route path="create" element={<CreateNoticePage />} />
+              <Route path="notices" element={<AllNoticesPage />} />
+            </Routes>
+          </Box>
         </Box>
       </Box>
     </Box>

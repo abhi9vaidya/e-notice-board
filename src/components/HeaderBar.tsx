@@ -35,64 +35,68 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
         color: 'text.primary',
       }}
     >
-      <Toolbar sx={{ px: { xs: 2, md: 3 }, minHeight: 70 }}>
-        {showMenuButton && (
-          <IconButton
-            edge="start"
-            color="primary"
-            aria-label="menu"
-            onClick={onMenuClick}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
+      <Toolbar sx={{ px: { xs: 2, md: 4, lg: 6 }, minHeight: 75 }}>
+        <Box sx={{ maxWidth: '1200px', mx: 'auto', width: '100%', display: 'flex', alignItems: 'center' }}>
+          {showMenuButton && (
+            <IconButton
+              edge="start"
+              color="primary"
+              aria-label="menu"
+              onClick={onMenuClick}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-          <Box
-            component="img"
-            src="/logo.png"
-            alt="University Logo"
-            sx={{
-              height: 48,
-              width: 48,
-              objectFit: 'contain',
-              display: { xs: 'none', sm: 'block' },
-            }}
-          />
-          <Typography
-            variant="h5"
-            fontWeight={700}
-            sx={{
-              letterSpacing: '-0.01em',
-              background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            {title}
-          </Typography>
-        </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+            <Box
+              component="img"
+              src="/logo.png"
+              alt="University Logo"
+              sx={{
+                height: 48,
+                width: 48,
+                objectFit: 'contain',
+                display: { xs: 'none', sm: 'block' },
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
+              }}
+            />
+            <Typography
+              variant="h5"
+              fontWeight={800}
+              sx={{
+                letterSpacing: '-0.02em',
+                background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              {title}
+            </Typography>
+          </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <IconButton
-            onClick={() => navigate('/display')}
-            title="Open TV Display"
-            sx={{
-              bgcolor: 'rgba(0, 58, 109, 0.05)',
-              color: 'primary.main',
-              border: '1px solid',
-              borderColor: 'rgba(0, 58, 109, 0.1)',
-              '&:hover': {
-                bgcolor: 'primary.main',
-                color: 'white',
-                transform: 'translateY(-2px)',
-                transition: 'all 0.2s',
-              },
-            }}
-          >
-            <TvIcon />
-          </IconButton>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <IconButton
+              onClick={() => navigate('/display')}
+              title="Open TV Display"
+              sx={{
+                bgcolor: 'rgba(0, 58, 109, 0.05)',
+                color: 'primary.main',
+                border: '1px solid',
+                borderColor: 'rgba(0, 58, 109, 0.1)',
+                '&:hover': {
+                  bgcolor: 'primary.main',
+                  color: 'white',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 12px rgba(0,58,109,0.2)',
+                  transition: 'all 0.2s',
+                },
+              }}
+            >
+              <TvIcon />
+            </IconButton>
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>

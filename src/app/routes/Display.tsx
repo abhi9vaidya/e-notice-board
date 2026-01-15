@@ -109,34 +109,38 @@ const Display: React.FC = () => {
         {/* Header */}
         <Paper
           elevation={0}
+          className="glass-header"
           sx={{
-            background: 'linear-gradient(135deg, #1565c0 0%, #0d47a1 50%, #1a237e 100%)',
+            background: `linear-gradient(135deg, ${tvTheme.palette.primary.main} 0%, ${tvTheme.palette.primary.dark} 100%)`,
             color: 'white',
-            py: 3,
-            px: 4,
+            py: 4,
+            px: { xs: 4, xl: 8 },
             borderRadius: 0,
+            zIndex: 10,
           }}
         >
           <Box
             sx={{
+              maxWidth: '1400px',
+              mx: 'auto',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
           >
             <Box>
-              <Typography variant="h3" fontWeight={700}>
-                University Digital Notice Board
+              <Typography variant="h3" fontWeight={800} sx={{ letterSpacing: '-0.02em', mb: 1, textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+                RBU DIGITAL NOTICE BOARD
               </Typography>
-              <Typography variant="h6" sx={{ opacity: 0.9, mt: 0.5 }}>
-                Department of Computer Science & Engineering
+              <Typography variant="h5" sx={{ opacity: 0.9, fontWeight: 500, letterSpacing: '0.02em' }}>
+                Smart Information Display System
               </Typography>
             </Box>
             <Box sx={{ textAlign: 'right' }}>
-              <Typography variant="h4" fontWeight={600}>
+              <Typography variant="h2" fontWeight={800}>
                 {formatTime(currentTime)}
               </Typography>
-              <Typography variant="h6" sx={{ opacity: 0.9 }}>
+              <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 600 }}>
                 {formatFullDate(currentTime)}
               </Typography>
             </Box>
@@ -147,40 +151,43 @@ const Display: React.FC = () => {
         <Box
           sx={{
             flex: 1,
-            p: 4,
+            p: { xs: 4, xl: 10 },
             opacity: isTransitioning ? 0 : 1,
-            transform: isTransitioning ? 'translateX(20px)' : 'translateX(0)',
-            transition: 'opacity 0.3s, transform 0.3s',
+            transform: isTransitioning ? 'translateY(20px)' : 'translateY(0)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          {sortedNotices.length === 0 ? (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100%',
-                minHeight: 400,
-              }}
-            >
-              <Paper sx={{ p: 6, textAlign: 'center', maxWidth: 600 }}>
-                <Typography variant="h4" color="text.secondary" gutterBottom>
-                  No Active Notices
-                </Typography>
-                <Typography variant="h6" color="text.secondary">
-                  Check back later for important announcements and updates.
-                </Typography>
-              </Paper>
-            </Box>
-          ) : (
-            <Grid container spacing={3}>
-              {currentNotices.map((notice: Notice) => (
-                <Grid size={{ xs: 12, sm: 6, lg: 4 }} key={notice.id}>
-                  <NoticeCard notice={notice} tvMode />
-                </Grid>
-              ))}
-            </Grid>
-          )}
+          <Box sx={{ maxWidth: '1400px', mx: 'auto', width: '100%', flex: 1 }}>
+            {sortedNotices.length === 0 ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                }}
+              >
+                <Paper className="glass-card" sx={{ p: 8, textAlign: 'center', maxWidth: 800 }}>
+                  <Typography variant="h3" color="primary" fontWeight={700} gutterBottom>
+                    No Active Notices
+                  </Typography>
+                  <Typography variant="h5" color="text.secondary">
+                    Stay tuned! New important announcements will appear here.
+                  </Typography>
+                </Paper>
+              </Box>
+            ) : (
+              <Grid container spacing={4}>
+                {currentNotices.map((notice: Notice) => (
+                  <Grid size={{ xs: 12, sm: 12, md: 6, lg: 4 }} key={notice.id}>
+                    <NoticeCard notice={notice} tvMode />
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+          </Box>
         </Box>
 
         {/* Pagination Controls */}

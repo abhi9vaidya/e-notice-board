@@ -13,6 +13,8 @@ export interface Notice {
   fileName?: string;
   fileType?: string;
   isPinned: boolean;
+  authorName?: string;
+  authorVisibility: 'Internal' | 'Public';
   isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -27,6 +29,8 @@ export interface NoticeFormData {
   startDate: Date | null;
   endDate: Date | null;
   file?: File | null;
+  authorName?: string;
+  authorVisibility: 'Internal' | 'Public';
 }
 
 export const NOTICE_CATEGORIES: NoticeCategory[] = [

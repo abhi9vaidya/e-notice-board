@@ -151,7 +151,7 @@ export const NoticesTable: React.FC<NoticesTableProps> = ({
           <TableHead>
             <TableRow>
               <TableCell width={40}></TableCell>
-              <TableCell>Title</TableCell>
+              <TableCell>Title / Author</TableCell>
               <TableCell width={120}>Category</TableCell>
               <TableCell width={80}>Type</TableCell>
               <TableCell width={130}>Start Date</TableCell>
@@ -211,6 +211,24 @@ export const NoticesTable: React.FC<NoticesTableProps> = ({
                       >
                         {notice.title}
                       </Typography>
+                      {notice.authorName && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                          <Typography variant="caption" color="primary" fontWeight={600}>
+                            {notice.authorName}
+                          </Typography>
+                          <Chip
+                            label={notice.authorVisibility}
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                              fontSize: '0.65rem',
+                              height: 18,
+                              borderColor: notice.authorVisibility === 'Internal' ? 'warning.light' : 'success.light',
+                              color: notice.authorVisibility === 'Internal' ? 'warning.dark' : 'success.dark',
+                            }}
+                          />
+                        </Box>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Chip
@@ -295,6 +313,6 @@ export const NoticesTable: React.FC<NoticesTableProps> = ({
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </Paper>
+    </Paper >
   );
 };

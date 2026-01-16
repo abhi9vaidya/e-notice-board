@@ -51,6 +51,8 @@ export const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
         category: notice.category,
         startDate: notice.startDate,
         endDate: notice.endDate,
+        authorName: notice.authorName || '',
+        authorVisibility: notice.authorVisibility || 'Public',
       });
     }
   }, [notice]);
@@ -136,6 +138,33 @@ export const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
                   disabled
                   helperText="Notice type cannot be changed"
                 />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  fullWidth
+                  label="Author / Department"
+                  value={formData.authorName || ''}
+                  onChange={(e) => handleChange('authorName', e.target.value)}
+                  disabled={isLoading}
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Visibility</InputLabel>
+                  <Select
+                    value={formData.authorVisibility || 'Public'}
+                    label="Visibility"
+                    onChange={(e) =>
+                      handleChange('authorVisibility', e.target.value as 'Internal' | 'Public')
+                    }
+                    disabled={isLoading}
+                  >
+                    <MenuItem value="Public">Public (Show on TV)</MenuItem>
+                    <MenuItem value="Internal">Internal (Faculty Only)</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>

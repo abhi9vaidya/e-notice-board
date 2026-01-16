@@ -142,6 +142,28 @@ export const NoticeCard: React.FC<NoticeCardProps> = ({
               sx={{ fontSize: '0.75rem' }}
             />
           )}
+          {/* Author Attribution */}
+          {notice.authorName && (
+            (!(tvMode && notice.authorVisibility === 'Internal')) && (
+              <Chip
+                label={notice.authorName}
+                size="small"
+                variant="outlined"
+                sx={{
+                  fontSize: tvMode ? '0.85rem' : '0.75rem',
+                  borderColor: 'primary.light',
+                  color: 'primary.main',
+                  opacity: notice.authorVisibility === 'Internal' ? 0.6 : 1,
+                  fontStyle: notice.authorVisibility === 'Internal' ? 'italic' : 'normal'
+                }}
+              />
+            )
+          )}
+          {!tvMode && notice.authorVisibility === 'Internal' && notice.authorName && (
+            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'flex', alignItems: 'center' }}>
+              (Hidden on TV)
+            </Typography>
+          )}
         </Box>
 
         {/* Title */}

@@ -46,6 +46,8 @@ const initialFormState: NoticeFormData = {
   startDate: new Date(),
   endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
   file: null,
+  authorName: '',
+  authorVisibility: 'Public',
 };
 
 export const NoticeForm: React.FC<NoticeFormProps> = ({
@@ -238,6 +240,44 @@ export const NoticeForm: React.FC<NoticeFormProps> = ({
                 }}
                 disabled={isLoading}
               />
+            </Grid>
+
+            {/* Attribution */}
+            <Grid size={{ xs: 12 }}>
+              <Typography variant="subtitle1" fontWeight={600} mb={1}>
+                Notice Attribution
+              </Typography>
+              <Paper variant="outlined" sx={{ p: 2, bgcolor: 'grey.50' }}>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 8 }}>
+                    <TextField
+                      fullWidth
+                      label="Author / Department (Optional)"
+                      placeholder="e.g., Dean Office, HOD CSE"
+                      value={formData.authorName || ''}
+                      onChange={(e) => handleChange('authorName', e.target.value)}
+                      disabled={isLoading}
+                      variant="standard"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 4 }}>
+                    <FormControl fullWidth variant="standard">
+                      <InputLabel>Visibility</InputLabel>
+                      <Select
+                        value={formData.authorVisibility}
+                        label="Visibility"
+                        onChange={(e) =>
+                          handleChange('authorVisibility', e.target.value as 'Internal' | 'Public')
+                        }
+                        disabled={isLoading}
+                      >
+                        <MenuItem value="Public">Public (Show on TV)</MenuItem>
+                        <MenuItem value="Internal">Internal (Faculty Only)</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Paper>
             </Grid>
 
             {/* File Upload */}

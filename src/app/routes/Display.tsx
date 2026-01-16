@@ -14,18 +14,25 @@ import {
 } from '@mui/icons-material';
 import { tvTheme } from '@/theme/theme';
 import { useNoticeStore } from '@/store/noticeStore';
+import { useAuthStore } from '@/store/authStore';
+import { useNavigate } from 'react-router-dom';
 import { NoticeCard } from '@/components/NoticeCard';
 import { formatFullDate, formatTime } from '@/utils/date';
 import { Notice } from '@/models/notice';
+import { Login as LoginIcon, Lock as AdminIcon } from '@mui/icons-material';
 
 const NOTICES_PER_PAGE = 6;
 const AUTO_ROTATE_INTERVAL = 10000; // 10 seconds
 
 const Display: React.FC = () => {
   const { activeNotices, subscribeToActiveNotices } = useNoticeStore();
+  const { isAdminDevice } = useAuthStore();
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const [showLoginHint, setShowLoginHint] = useState(false);
 
   // Subscribe to active notices
   useEffect(() => {
@@ -78,6 +85,35 @@ const Display: React.FC = () => {
       setCurrentPage(0);
     }
   }, [totalPages, currentPage]);
+
+  // Hidden Gesture Logic: Click logo 5 times to reveal login hint
+  const handleLogoClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+
+    if (newCount >= 5) {
+      setShowLoginHint(true);
+      setClickCount(0);
+      // Automatically hide hint after 10 seconds
+      setTimeout(() => setShowLoginHint(false), 10000);
+    }
+
+    // Reset count if no click for 2 seconds
+    const timeout = setTimeout(() => setClickCount(0), 2000);
+    return () => clearTimeout(timeout);
+  };
+
+  // Back-button lockdown (Kiosk Mode)
+  useEffect(() => {
+    if (!isAdminDevice) {
+      window.history.pushState(null, '', window.location.href);
+      const handlePopState = () => {
+        window.history.pushState(null, '', window.location.href);
+      };
+      window.addEventListener('popstate', handlePopState);
+      return () => window.removeEventListener('popstate', handlePopState);
+    }
+  }, [isAdminDevice]);
 
   const handlePrevPage = () => {
     setIsTransitioning(true);
@@ -132,6 +168,7 @@ const Display: React.FC = () => {
                 component="img"
                 src="/logo.png"
                 alt="RBU Logo"
+                onClick={handleLogoClick}
                 sx={{
                   height: 80,
                   width: 80,
@@ -140,6 +177,9 @@ const Display: React.FC = () => {
                   bgcolor: 'white',
                   borderRadius: '50%',
                   p: 1,
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                  '&:active': { transform: 'scale(0.9)' }
                 }}
               />
               <Box>
@@ -151,16 +191,68 @@ const Display: React.FC = () => {
                 </Typography>
               </Box>
             </Box>
-            <Box sx={{ textAlign: 'right' }}>
-              <Typography variant="h2" fontWeight={800}>
-                {formatTime(currentTime)}
-              </Typography>
-              <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 600 }}>
-                {formatFullDate(currentTime)}
-              </Typography>
+            <Box sx={{ textAlign: 'right', display: 'flex', flexWrap: 'wrap', gap: 4, alignItems: 'center' }}>
+              {isAdminDevice && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    bgcolor: 'rgba(255,255,255,0.1)',
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    border: '1px solid rgba(255,255,255,0.2)'
+                  }}
+                >
+                  <AdminIcon sx={{ fontSize: 18 }} />
+                  <Typography variant="caption" sx={{ fontWeight: 700, letterSpacing: '0.05em' }}>MANAGEMENT ON</Typography>
+                </Box>
+              )}
+              <Box>
+                <Typography variant="h2" fontWeight={800}>
+                  {formatTime(currentTime)}
+                </Typography>
+                <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 600 }}>
+                  {formatFullDate(currentTime)}
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Paper>
+
+        {/* Hidden Login Hint (Appears after gesture) */}
+        {showLoginHint && (
+          <Box
+            sx={{
+              position: 'fixed',
+              top: 120,
+              left: 40,
+              zIndex: 100,
+              animation: 'fadeIn 0.5s ease',
+              '@keyframes fadeIn': { from: { opacity: 0, transform: 'translateY(-10px)' }, to: { opacity: 1, transform: 'translateY(0)' } }
+            }}
+          >
+            <Paper
+              elevation={24}
+              sx={{
+                p: 2,
+                bgcolor: 'primary.main',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                borderRadius: 2,
+                cursor: 'pointer',
+                '&:hover': { bgcolor: 'primary.dark' }
+              }}
+              onClick={() => navigate('/login')}
+            >
+              <LoginIcon />
+              <Typography variant="button" sx={{ fontWeight: 700 }}>Management Login</Typography>
+            </Paper>
+          </Box>
+        )}
 
         {/* Notices Grid */}
         <Box

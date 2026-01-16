@@ -13,6 +13,7 @@ import {
 import {
   NotificationsActive as NoticeIcon,
   Schedule as ScheduleIcon,
+  Archive as ArchiveIcon,
   CheckCircle as ActiveIcon,
   Error as ExpiredIcon,
 } from '@mui/icons-material';
@@ -340,6 +341,68 @@ const AllNoticesPage: React.FC = () => {
   );
 };
 
+// Archive Page Component
+const ArchivePage: React.FC = () => {
+  const {
+    getFilteredNotices,
+    setCategoryFilter,
+    setStatusFilter,
+    isLoading,
+  } = useNoticeStore();
+
+  // Set status filter to Archived on mount
+  useEffect(() => {
+    setStatusFilter('Archived');
+    return () => setStatusFilter('All');
+  }, [setStatusFilter]);
+
+  const archivedNotices = getFilteredNotices();
+
+  return (
+    <Box>
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box>
+          <Typography variant="h4" fontWeight={800} color="primary.main" sx={{ letterSpacing: '-0.02em' }}>
+            Notice Archive
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Long-term storage for historical notices and attachments
+          </Typography>
+        </Box>
+        <Paper
+          sx={{
+            px: 2, py: 1,
+            bgcolor: 'success.light',
+            backgroundColor: (theme) => `${theme.palette.success.light}20`,
+            color: 'success.dark',
+            border: '1px solid',
+            borderColor: 'success.light',
+            borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }}
+        >
+          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'success.main' }} />
+          <Typography variant="caption" fontWeight={700}>GOOGLE DRIVE CONNECTED</Typography>
+        </Paper>
+      </Box>
+
+      <NoticesTable
+        notices={archivedNotices}
+        isLoading={isLoading}
+        categoryFilter="All"
+        statusFilter="Archived"
+        onCategoryFilterChange={setCategoryFilter}
+        onStatusFilterChange={() => { }} // Disabled on archive page
+        onEdit={() => { }} // Optional: might want to view but not edit
+        onDelete={() => { }} // Optional
+        onTogglePin={() => { }} // Pins not applicable for archive
+      />
+    </Box>
+  );
+};
+
 // Main Dashboard Component
 const Dashboard: React.FC = () => {
   const theme = useTheme();
@@ -368,6 +431,8 @@ const Dashboard: React.FC = () => {
         return 'Create Notice';
       case '/dashboard/notices':
         return 'All Notices';
+      case '/dashboard/archive':
+        return 'Notice Archive';
       default:
         return 'Dashboard';
     }
@@ -405,6 +470,7 @@ const Dashboard: React.FC = () => {
               <Route index element={<DashboardOverview />} />
               <Route path="create" element={<CreateNoticePage />} />
               <Route path="notices" element={<AllNoticesPage />} />
+              <Route path="archive" element={<ArchivePage />} />
             </Routes>
           </Box>
         </Box>

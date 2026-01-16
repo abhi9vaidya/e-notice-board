@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { isAuthenticated, isLoading, isAdminDevice } = useAuthStore();
   const location = useLocation();
 
   if (isLoading) {
@@ -25,6 +25,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         <CircularProgress size={48} />
       </Box>
     );
+  }
+
+  if (!isAdminDevice) {
+    return <Navigate to="/display" replace />;
   }
 
   if (!isAuthenticated) {

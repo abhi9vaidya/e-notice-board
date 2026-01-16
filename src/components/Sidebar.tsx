@@ -20,6 +20,7 @@ import {
   ListAlt as ListIcon,
   Logout as LogoutIcon,
   NotificationsActive as NoticeIcon,
+  Archive as ArchiveIcon,
 } from '@mui/icons-material';
 import { useAuthStore } from '@/store/authStore';
 
@@ -35,6 +36,7 @@ const navItems: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
   { label: 'Create Notice', path: '/dashboard/create', icon: <AddIcon /> },
   { label: 'All Notices', path: '/dashboard/notices', icon: <ListIcon /> },
+  { label: 'Archive', path: '/dashboard/archive', icon: <ArchiveIcon /> },
 ];
 
 interface SidebarProps {

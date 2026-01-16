@@ -4,6 +4,8 @@ import { theme } from './theme/theme';
 import { AppRouter } from './app/AppRouter';
 import { useAuthStore } from './store/authStore';
 
+import { BrowserRouter } from 'react-router-dom';
+
 const App: React.FC = () => {
   const { initialize } = useAuthStore();
 
@@ -14,7 +16,9 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppRouter />
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
     </ThemeProvider>
   );
 };

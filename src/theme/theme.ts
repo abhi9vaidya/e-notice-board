@@ -31,6 +31,9 @@ const themeOptions: ThemeOptions = {
     },
     success: {
       main: '#43a047',
+      light: '#4caf50',
+      dark: '#2e7d32',
+      contrastText: '#ffffff',
     },
     info: {
       main: '#0288d1',

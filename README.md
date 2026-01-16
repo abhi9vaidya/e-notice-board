@@ -15,6 +15,7 @@
 - [Firebase Setup Steps](#firebase-setup-steps)
 - [Deploy to Firebase Hosting](#deploy-to-firebase-hosting)
 - [TV Kiosk Setup](#tv-kiosk-setup)
+- [Google Drive Archive System](#google-drive-archive-system)
 - [Future Scope](#future-scope)
 - [Contributing](#contributing)
 - [License](#license)
@@ -37,10 +38,13 @@ Traditional notice boards in colleges rely on paper notices, which are:
 ## Key Features
 - **Remote Management:** Faculty can post notices from anywhere via a secure web dashboard.
 - **Real-time Updates:** Notices appear on the TV display instantly using Firebase Firestore.
+- **TV Lockdown (Kiosk Mode):** Hardened security with secret key authorization, hidden gestures, and back-button restrictions for public displays.
+- **Google Drive Archival:** Automatic offloading of notice attachments (Images/PDFs) to Google Drive to overcome Firebase storage limits.
+- **Author Attribution:** Optional author/department name display with "Internal" visibility mode for management-only attribution.
+- **Archive System:** Dedicated dashboard section for viewing and managing historical notices stored in Google Drive.
 - **Automatic Cleanup:** Expired notices are automatically removed from the display flow.
 - **Multimedia Support:** Supports text announcements, images, and PDFs.
 - **Carousel Display:** Notices auto-rotate (carousel mode) on the TV screen.
-- **Kiosk Mode Ready:** Optimized for Android TV / Fire TV Stick browsers.
 - **Role-Based Access:** Secure login for authorized faculty members only.
 
 ---
@@ -107,19 +111,25 @@ Stores authorized faculty details.
 ```
 
 ### 2. `notices` Collection
-Stores notice data.
+Stores notice data and archive metadata.
 ```json
 {
   "id": "notice_unique_id",
   "title": "Exam Schedule",
-  "content": "Mid-term exams start from...",
+  "description": "Mid-term exams start from...",
   "type": "text | image | pdf",
-  "mediaUrl": "https://firebasestorage...",
-  "startDate": "iso_date_string",
-  "endDate": "iso_date_string",
-  "postedBy": "user_uid",
-  "createdAt": "timestamp",
-  "isActive": true
+  "fileUrl": "...",
+  "startDate": "timestamp",
+  "endDate": "timestamp",
+  "authorName": "Department of CS",
+  "authorVisibility": "Public | Internal",
+  "status": "Active | Archived",
+  "driveLinkId": "google_drive_view_url",
+  "driveFileId": "google_drive_file_id",
+  "isPinned": false,
+  "isActive": true,
+  "postedBy": "user_email",
+  "createdAt": "timestamp"
 }
 ```
 
@@ -158,6 +168,9 @@ VITE_FIREBASE_PROJECT_ID=your_project_id
 VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
+
+# Google Drive Archive Bridge (Apps Script Web App)
+VITE_GOOGLE_DRIVE_BRIDGE_URL=https://script.google.com/macros/s/.../exec
 ```
 
 ---
@@ -229,6 +242,21 @@ To run this on a TV:
    - Enable **Auto-Start on Boot**.
    - **Lock Navigation** bar to prevent exiting.
 
+### 4. Digital Signage Hardening (New)
+To prevent unauthorized tampering at public TV locations:
+- **Secret Key Authorization:** Faculty can "Unlock" a display for management by appending `?admin_key=RBU2026` to the URL. This enables the `isAdminDevice` flag in local storage.
+- **Hidden Gesture:** On locked displays, faculty can click the **RBU Logo 5 times** within 2 seconds to reveal a hidden "Management Login" button.
+- **Back-button Trap:** Non-authorized devices are restricted from navigating away from the `/display` route.
+- **Management Indicator:** Authorized devices display a small **"MANAGEMENT ON"** chip in the top-right corner of the board.
+
+---
+
+## Google Drive Archive System
+To bypass the 5GB limit of the Firebase Storage free tier, we use a **Google Apps Script Bridge**:
+1.  **Storage Logic:** All Images and PDFs attached to notices are uploaded directly to a dedicated Google Drive folder (`RBU_Notice_Archive`).
+2.  **Archival:** When a notice is created/updated, metadata is stored in Firebase, while the heavy file resides in Drive. 
+3.  **Bridge Security:** The bridge (Apps Script) handles CORS and Base64 conversion to allow secure browser-to-Drive uploads without exposing sensitive API keys in the frontend.
+
 ---
 
 ## Future Scope
@@ -266,3 +294,10 @@ MIT License. See [LICENSE](LICENSE) for details.
 - **Parnavi Kite**
 - **Kartik Suchak**
 - **Abhinav Vaidya**
+
+---
+
+### **Branch Summary: feature-drive-archive**
+In this branch, we basically gave the TV display some "bodyguards" so it's much harder to tamper with (locked it down with secret keys, hidden gestures, and navigation traps). 
+
+We also hooked the system up to **Google Drive** for all notice attachments—this way, we can host as many big PDFs and photos as we want without hitting the Firebase storage limit. On top of that, faculty can now add their names to notices (or hide them), and we gave the whole management portal and login page a fresh, premium coat of paint! 🚀

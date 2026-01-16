@@ -11,7 +11,7 @@ interface NoticeStore {
 
   // Filters
   categoryFilter: NoticeCategory | 'All';
-  statusFilter: 'All' | 'Active' | 'Expired' | 'Upcoming';
+  statusFilter: 'All' | 'Active' | 'Expired' | 'Upcoming' | 'Archived';
 
   // Actions
   subscribeToNotices: () => () => void;
@@ -23,7 +23,7 @@ interface NoticeStore {
 
   // Filter actions
   setCategoryFilter: (category: NoticeCategory | 'All') => void;
-  setStatusFilter: (status: 'All' | 'Active' | 'Expired' | 'Upcoming') => void;
+  setStatusFilter: (status: 'All' | 'Active' | 'Expired' | 'Upcoming' | 'Archived') => void;
 
   // Selectors
   getFilteredNotices: () => Notice[];
@@ -60,7 +60,8 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
       let fileData;
 
       if (formData.file && (formData.type === 'Image' || formData.type === 'PDF')) {
-        fileData = await storageService.uploadNoticeFile(formData.file);
+        // Use Google Drive for storage to stay within Firebase free tier limits
+        fileData = await storageService.uploadToDrive(formData.file);
       }
 
       const notice = await noticeService.createNotice(formData, fileData, createdBy);
@@ -123,6 +124,14 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
         }
 
         if (statusFilter !== 'All') {
+          // Handle 'Archived' status explicitly from the notice status field
+          if (statusFilter === 'Archived') {
+            return notice.status === 'Archived';
+          }
+
+          // Only show non-archived notices for the other filters
+          if (notice.status === 'Archived') return false;
+
           const now = new Date();
           const isActive = notice.startDate <= now && notice.endDate >= now;
           const isExpired = notice.endDate < now;
@@ -130,6 +139,9 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
           if (statusFilter === 'Active' && !isActive) return false;
           if (statusFilter === 'Expired' && !isExpired) return false;
           if (statusFilter === 'Upcoming' && (isActive || isExpired)) return false;
+        } else {
+          // By default, hide archived notices in 'All' view unless specifically requested
+          return notice.status !== 'Archived';
         }
 
         return true;

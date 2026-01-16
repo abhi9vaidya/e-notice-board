@@ -16,6 +16,9 @@ export interface Notice {
   authorName?: string;
   authorVisibility: 'Internal' | 'Public';
   isActive?: boolean;
+  status: 'Active' | 'Archived';
+  driveLinkId?: string;
+  driveFileId?: string;
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;

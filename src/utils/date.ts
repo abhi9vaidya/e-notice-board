@@ -25,7 +25,8 @@ export const isNoticeUpcoming = (notice: Notice): boolean => {
   return isBefore(now, start);
 };
 
-export const getNoticeStatus = (notice: Notice): 'Active' | 'Expired' | 'Upcoming' => {
+export const getNoticeStatus = (notice: Notice): 'Active' | 'Expired' | 'Upcoming' | 'Archived' => {
+  if (notice.status === 'Archived') return 'Archived';
   if (isNoticeActive(notice)) return 'Active';
   if (isNoticeExpired(notice)) return 'Expired';
   return 'Upcoming';

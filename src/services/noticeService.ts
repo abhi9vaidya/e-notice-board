@@ -34,6 +34,7 @@ const generateMockNotices = (): Notice[] => {
       isPinned: true,
       authorName: 'Examination Cell',
       authorVisibility: 'Public',
+      status: 'Active',
       createdAt: oneWeekAgo,
       updatedAt: oneWeekAgo,
       createdBy: 'faculty@university.edu',
@@ -49,6 +50,7 @@ const generateMockNotices = (): Notice[] => {
       isPinned: true,
       authorName: 'Placement Cell',
       authorVisibility: 'Public',
+      status: 'Active',
       createdAt: oneWeekAgo,
       updatedAt: oneWeekAgo,
       createdBy: 'faculty@university.edu',
@@ -64,6 +66,7 @@ const generateMockNotices = (): Notice[] => {
       isPinned: false,
       authorName: 'Student Council',
       authorVisibility: 'Public',
+      status: 'Active',
       createdAt: now,
       updatedAt: now,
       createdBy: 'faculty@university.edu',
@@ -82,6 +85,7 @@ const generateMockNotices = (): Notice[] => {
       isPinned: false,
       authorName: 'Academic Dept',
       authorVisibility: 'Internal',
+      status: 'Active',
       createdAt: oneWeekAgo,
       updatedAt: oneWeekAgo,
       createdBy: 'faculty@university.edu',
@@ -97,6 +101,7 @@ const generateMockNotices = (): Notice[] => {
       isPinned: false,
       authorName: 'Library Dept',
       authorVisibility: 'Public',
+      status: 'Active',
       createdAt: now,
       updatedAt: now,
       createdBy: 'faculty@university.edu',
@@ -112,6 +117,7 @@ const generateMockNotices = (): Notice[] => {
       isPinned: false,
       authorName: 'System admin',
       authorVisibility: 'Internal',
+      status: 'Active',
       createdAt: oneWeekAgo,
       updatedAt: oneWeekAgo,
       createdBy: 'faculty@university.edu',
@@ -138,15 +144,20 @@ const mapFirestoreNotice = (id: string, data: any): Notice => ({
   authorVisibility: data.authorVisibility || 'Public',
   isPinned: data.isPinned || false,
   isActive: data.isActive !== undefined ? data.isActive : true,
+  status: data.status || 'Active',
+  driveLinkId: data.driveLinkId || data.fileUrl, // Fallback for Drive links
+  driveFileId: data.driveFileId,
   createdAt: data.createdAt?.toDate() || new Date(),
   updatedAt: data.updatedAt?.toDate() || new Date(),
   // Support both 'createdBy' (code) and 'postedBy' (README)
   createdBy: data.createdBy || data.postedBy || 'faculty@university.edu',
 });
 
+import { UploadResult } from './storageService';
+
 export const createNotice = async (
   formData: NoticeFormData,
-  fileData?: { fileUrl: string; fileType: string; fileName: string },
+  fileData?: UploadResult,
   createdBy: string = 'faculty@university.edu'
 ): Promise<Notice> => {
   const now = new Date();
@@ -161,10 +172,13 @@ export const createNotice = async (
     fileUrl: fileData?.fileUrl,
     fileName: fileData?.fileName,
     fileType: fileData?.fileType,
+    driveLinkId: fileData?.fileUrl,
+    driveFileId: fileData?.fileId,
     authorName: formData.authorName,
     authorVisibility: formData.authorVisibility || 'Public',
     isPinned: false,
     isActive: true, // Default to true as per README
+    status: 'Active' as const,
     createdAt: now,
     updatedAt: now,
     createdBy,

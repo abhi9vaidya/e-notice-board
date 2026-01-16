@@ -5,7 +5,10 @@ export interface UploadResult {
   fileUrl: string;
   fileType: string;
   fileName: string;
+  fileId?: string;
 }
+
+const DRIVE_BRIDGE_URL = (import.meta as any).env?.VITE_GOOGLE_DRIVE_BRIDGE_URL;
 
 /**
  * Uploads a file to Firebase Storage or returns a local object URL in mock mode
@@ -48,6 +51,51 @@ export const uploadNoticeFile = async (file: File): Promise<UploadResult> => {
     fileType: file.type,
     fileName: file.name,
   };
+};
+
+/**
+ * Uploads a file to Google Drive via the Apps Script bridge
+ */
+export const uploadToDrive = async (file: File): Promise<UploadResult> => {
+  if (!DRIVE_BRIDGE_URL) {
+    console.warn('Google Drive Bridge URL not configured. Falling back to mock.');
+    return uploadNoticeFile(file);
+  }
+
+  // Convert file to base64 for the Apps Script bridge
+  const base64 = await new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(',')[1]);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  try {
+    const response = await fetch(DRIVE_BRIDGE_URL, {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify({
+        filename: file.name,
+        mimeType: file.type,
+        data: base64
+      })
+    });
+
+    const result = await response.json();
+    if (!result.success) throw new Error(result.error);
+
+    return {
+      fileUrl: result.viewUrl,
+      fileId: result.fileId,
+      fileType: file.type,
+      fileName: file.name,
+    };
+  } catch (error) {
+    console.error('Drive upload failed:', error);
+    throw error;
+  }
 };
 
 /**

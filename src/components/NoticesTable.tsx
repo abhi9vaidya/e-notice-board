@@ -36,9 +36,9 @@ interface NoticesTableProps {
   notices: Notice[];
   isLoading?: boolean;
   categoryFilter: NoticeCategory | 'All';
-  statusFilter: 'All' | 'Active' | 'Expired' | 'Upcoming';
+  statusFilter: 'All' | 'Active' | 'Expired' | 'Upcoming' | 'Archived';
   onCategoryFilterChange: (category: NoticeCategory | 'All') => void;
-  onStatusFilterChange: (status: 'All' | 'Active' | 'Expired' | 'Upcoming') => void;
+  onStatusFilterChange: (status: 'All' | 'Active' | 'Expired' | 'Upcoming' | 'Archived') => void;
   onEdit: (notice: Notice) => void;
   onDelete: (notice: Notice) => void;
   onTogglePin: (id: string, isPinned: boolean) => void;
@@ -75,6 +75,8 @@ export const NoticesTable: React.FC<NoticesTableProps> = ({
         return 'error';
       case 'Upcoming':
         return 'info';
+      case 'Archived':
+        return 'default';
       default:
         return 'default';
     }
@@ -126,7 +128,7 @@ export const NoticesTable: React.FC<NoticesTableProps> = ({
               label="Status"
               onChange={(e) =>
                 onStatusFilterChange(
-                  e.target.value as 'All' | 'Active' | 'Expired' | 'Upcoming'
+                  e.target.value as 'All' | 'Active' | 'Expired' | 'Upcoming' | 'Archived'
                 )
               }
             >
@@ -134,6 +136,7 @@ export const NoticesTable: React.FC<NoticesTableProps> = ({
               <MenuItem value="Active">Active</MenuItem>
               <MenuItem value="Expired">Expired</MenuItem>
               <MenuItem value="Upcoming">Upcoming</MenuItem>
+              <MenuItem value="Archived">Archived</MenuItem>
             </Select>
           </FormControl>
 

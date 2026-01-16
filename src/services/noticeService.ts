@@ -21,7 +21,7 @@ const generateMockNotices = (): Notice[] => {
   const oneWeekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   const twoWeeksLater = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
   const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  
+
   return [
     {
       id: '1',
@@ -132,7 +132,7 @@ export const createNotice = async (
   createdBy: string = 'faculty@university.edu'
 ): Promise<Notice> => {
   const now = new Date();
-  
+
   const noticeData = {
     title: formData.title,
     description: formData.description,
@@ -148,11 +148,11 @@ export const createNotice = async (
     updatedAt: now,
     createdBy,
   };
-  
+
   if (isFirebaseConfigured()) {
     const db = getFirebaseDb();
     if (!db) throw new Error('Firestore not initialized');
-    
+
     const docRef = await addDoc(collection(db, 'notices'), {
       ...noticeData,
       startDate: Timestamp.fromDate(noticeData.startDate),
@@ -160,10 +160,10 @@ export const createNotice = async (
       createdAt: Timestamp.fromDate(now),
       updatedAt: Timestamp.fromDate(now),
     });
-    
+
     return { id: docRef.id, ...noticeData };
   }
-  
+
   // Mock create
   await new Promise((resolve) => setTimeout(resolve, 300));
   const newNotice: Notice = {
@@ -171,7 +171,7 @@ export const createNotice = async (
     ...noticeData,
   };
   mockNotices = [newNotice, ...mockNotices];
-  
+
   return newNotice;
 };
 
@@ -180,19 +180,19 @@ export const updateNotice = async (
   payload: Partial<Notice>
 ): Promise<void> => {
   const now = new Date();
-  
+
   if (isFirebaseConfigured()) {
     const db = getFirebaseDb();
     if (!db) throw new Error('Firestore not initialized');
-    
+
     const updateData: any = { ...payload, updatedAt: Timestamp.fromDate(now) };
     if (payload.startDate) updateData.startDate = Timestamp.fromDate(payload.startDate);
     if (payload.endDate) updateData.endDate = Timestamp.fromDate(payload.endDate);
-    
+
     await updateDoc(doc(db, 'notices', id), updateData);
     return;
   }
-  
+
   // Mock update
   await new Promise((resolve) => setTimeout(resolve, 300));
   mockNotices = mockNotices.map((notice) =>
@@ -200,16 +200,31 @@ export const updateNotice = async (
   );
 };
 
-export const deleteNotice = async (id: string): Promise<void> => {
+export const deleteNoticeFile = async (fileUrl: string): Promise<void> => {
+  // Use storageService to delete files
+};
+
+import { deleteNoticeFile as cleanupStaticFile } from './storageService';
+
+export const deleteNotice = async (id: string, fileUrl?: string): Promise<void> => {
   if (isFirebaseConfigured()) {
     const db = getFirebaseDb();
     if (!db) throw new Error('Firestore not initialized');
-    
+
+    // 1. Delete associated file from Storage if exists
+    if (fileUrl) {
+      await cleanupStaticFile(fileUrl);
+    }
+
+    // 2. Delete notice document from Firestore
     await deleteDoc(doc(db, 'notices', id));
     return;
   }
-  
+
   // Mock delete
+  if (fileUrl) {
+    await cleanupStaticFile(fileUrl);
+  }
   await new Promise((resolve) => setTimeout(resolve, 300));
   mockNotices = mockNotices.filter((notice) => notice.id !== id);
 };
@@ -225,11 +240,11 @@ export const subscribeToNotices = (
     const db = getFirebaseDb();
     if (!db) {
       callback([]);
-      return () => {};
+      return () => { };
     }
-    
+
     const q = query(collection(db, 'notices'), orderBy('createdAt', 'desc'));
-    
+
     return onSnapshot(q, (snapshot) => {
       const notices = snapshot.docs.map((doc) =>
         mapFirestoreNotice(doc.id, doc.data())
@@ -237,15 +252,15 @@ export const subscribeToNotices = (
       callback(notices);
     });
   }
-  
+
   // Mock subscription
   callback(mockNotices);
-  
+
   // Set up polling for mock updates
   const interval = setInterval(() => {
     callback(mockNotices);
   }, 2000);
-  
+
   return () => clearInterval(interval);
 };
 
@@ -256,16 +271,16 @@ export const subscribeToActiveNotices = (
     const db = getFirebaseDb();
     if (!db) {
       callback([]);
-      return () => {};
+      return () => { };
     }
-    
+
     const now = new Date();
     const q = query(
       collection(db, 'notices'),
       where('startDate', '<=', Timestamp.fromDate(now)),
       orderBy('startDate', 'desc')
     );
-    
+
     return onSnapshot(q, (snapshot) => {
       const notices = snapshot.docs
         .map((doc) => mapFirestoreNotice(doc.id, doc.data()))
@@ -273,16 +288,16 @@ export const subscribeToActiveNotices = (
       callback(notices);
     });
   }
-  
+
   // Mock active notices
   const getActiveNotices = () => mockNotices.filter(isNoticeActive);
   callback(getActiveNotices());
-  
+
   // Refresh every 30 seconds
   const interval = setInterval(() => {
     callback(getActiveNotices());
   }, 30000);
-  
+
   return () => clearInterval(interval);
 };
 

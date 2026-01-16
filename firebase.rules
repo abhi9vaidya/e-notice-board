@@ -1,0 +1,45 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isFaculty() {
+      // For now, any authenticated user can act as faculty.
+      // In a production app, you would check request.auth.token.role == 'faculty'
+      return isAuthenticated();
+    }
+
+    // Notices collection rules
+    match /notices/{noticeId} {
+      // Anyone can read notices
+      allow read: if true;
+      
+      // Only authenticated faculty can create, update, or delete
+      allow create, update, delete: if isFaculty();
+    }
+    
+    // User profile rules (if needed later)
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if request.auth.uid == userId;
+    }
+  }
+}
+
+// Storage Rules
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /notices/{allPaths=**} {
+      // Anyone can view icons or images/pdfs
+      allow read: if true;
+      
+      // Only authenticated faculty can upload or delete files
+      allow write: if request.auth != null;
+    }
+  }
+}

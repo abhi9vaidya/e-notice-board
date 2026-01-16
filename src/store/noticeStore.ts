@@ -8,11 +8,11 @@ interface NoticeStore {
   activeNotices: Notice[];
   isLoading: boolean;
   error: string | null;
-  
+
   // Filters
   categoryFilter: NoticeCategory | 'All';
   statusFilter: 'All' | 'Active' | 'Expired' | 'Upcoming';
-  
+
   // Actions
   subscribeToNotices: () => () => void;
   subscribeToActiveNotices: () => () => void;
@@ -20,11 +20,11 @@ interface NoticeStore {
   updateNotice: (id: string, payload: Partial<Notice>) => Promise<void>;
   deleteNotice: (id: string) => Promise<void>;
   togglePinned: (id: string, isPinned: boolean) => Promise<void>;
-  
+
   // Filter actions
   setCategoryFilter: (category: NoticeCategory | 'All') => void;
   setStatusFilter: (status: 'All' | 'Active' | 'Expired' | 'Upcoming') => void;
-  
+
   // Selectors
   getFilteredNotices: () => Notice[];
 }
@@ -36,33 +36,33 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
   error: null,
   categoryFilter: 'All',
   statusFilter: 'All',
-  
+
   subscribeToNotices: () => {
     set({ isLoading: true });
-    
+
     return noticeService.subscribeToNotices((notices) => {
       set({ notices, isLoading: false, error: null });
     });
   },
-  
+
   subscribeToActiveNotices: () => {
     set({ isLoading: true });
-    
+
     return noticeService.subscribeToActiveNotices((activeNotices) => {
       set({ activeNotices, isLoading: false, error: null });
     });
   },
-  
+
   createNotice: async (formData: NoticeFormData, createdBy?: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       let fileData;
-      
+
       if (formData.file && (formData.type === 'Image' || formData.type === 'PDF')) {
         fileData = await storageService.uploadNoticeFile(formData.file);
       }
-      
+
       const notice = await noticeService.createNotice(formData, fileData, createdBy);
       set({ isLoading: false });
       return notice;
@@ -72,10 +72,10 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
       throw error;
     }
   },
-  
+
   updateNotice: async (id: string, payload: Partial<Notice>) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       await noticeService.updateNotice(id, payload);
       set({ isLoading: false });
@@ -85,12 +85,13 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
       throw error;
     }
   },
-  
+
   deleteNotice: async (id: string) => {
     set({ isLoading: true, error: null });
-    
+
     try {
-      await noticeService.deleteNotice(id);
+      const notice = get().notices.find(n => n.id === id);
+      await noticeService.deleteNotice(id, notice?.fileUrl);
       set({ isLoading: false });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to delete notice';
@@ -98,7 +99,7 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
       throw error;
     }
   },
-  
+
   togglePinned: async (id: string, isPinned: boolean) => {
     try {
       await noticeService.togglePinned(id, isPinned);
@@ -108,29 +109,29 @@ export const useNoticeStore = create<NoticeStore>((set, get) => ({
       throw error;
     }
   },
-  
+
   setCategoryFilter: (categoryFilter) => set({ categoryFilter }),
   setStatusFilter: (statusFilter) => set({ statusFilter }),
-  
+
   getFilteredNotices: () => {
     const { notices, categoryFilter, statusFilter } = get();
-    
+
     return notices
       .filter((notice) => {
         if (categoryFilter !== 'All' && notice.category !== categoryFilter) {
           return false;
         }
-        
+
         if (statusFilter !== 'All') {
           const now = new Date();
           const isActive = notice.startDate <= now && notice.endDate >= now;
           const isExpired = notice.endDate < now;
-          
+
           if (statusFilter === 'Active' && !isActive) return false;
           if (statusFilter === 'Expired' && !isExpired) return false;
           if (statusFilter === 'Upcoming' && (isActive || isExpired)) return false;
         }
-        
+
         return true;
       })
       .sort((a, b) => {

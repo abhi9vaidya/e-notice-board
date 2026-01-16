@@ -10,6 +10,7 @@ interface AuthStore extends AuthState {
   initialize: () => void;
   setUser: (user: User | null) => void;
   checkSecretKey: (params: URLSearchParams) => boolean;
+  setAdminDevice: (isAdmin: boolean) => void;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -22,7 +23,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
   login: async (email: string, password: string) => {
     const user = await authService.signIn(email, password);
     authService.setMockUser(user);
-    set({ user, isAuthenticated: true });
+    // Automatically authorize the device upon successful login
+    localStorage.setItem('rbu_admin_device', 'true');
+    set({ user, isAuthenticated: true, isAdminDevice: true });
   },
 
   logout: async () => {
@@ -64,5 +67,10 @@ export const useAuthStore = create<AuthStore>((set) => ({
       return true;
     }
     return false;
+  },
+
+  setAdminDevice: (isAdmin: boolean) => {
+    localStorage.setItem('rbu_admin_device', isAdmin ? 'true' : 'false');
+    set({ isAdminDevice: isAdmin });
   },
 }));

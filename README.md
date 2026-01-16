@@ -298,6 +298,6 @@ MIT License. See [LICENSE](LICENSE) for details.
 ---
 
 ### **Branch Summary: feature-drive-archive**
-In this branch, we basically gave the TV display some "bodyguards" so it's much harder to tamper with (locked it down with secret keys, hidden gestures, and navigation traps). 
+In this branch, we gave the TV display some serious "bodyguards" to prevent tampering (locked down with secret keys, hidden gestures, and navigation traps). We also fixed the hidden login flow so it's smoother—now, clicking the secret "Management Login" button (revealed by clicking the logo 5 times) instantly authorizes that browser, so you aren't kicked back by the security guard!
 
-We also hooked the system up to **Google Drive** for all notice attachments—this way, we can host as many big PDFs and photos as we want without hitting the Firebase storage limit. On top of that, faculty can now add their names to notices (or hide them), and we gave the whole management portal and login page a fresh, premium coat of paint! 🚀
+We also hooked the system up to **Google Drive** for all notice attachments, allowing for virtually unlimited storage of large PDFs and images. Plus, faculty now get automatic "Admin Device" status just by logging in once. Finally, we polished everything with a fresh, premium UI for the dashboard and login pages. 🚀

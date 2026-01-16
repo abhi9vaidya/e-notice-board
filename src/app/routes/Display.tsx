@@ -246,7 +246,11 @@ const Display: React.FC = () => {
                 cursor: 'pointer',
                 '&:hover': { bgcolor: 'primary.dark' }
               }}
-              onClick={() => navigate('/login')}
+              onClick={() => {
+                const { setAdminDevice } = useAuthStore.getState();
+                setAdminDevice(true);
+                navigate('/login');
+              }}
             >
               <LoginIcon />
               <Typography variant="button" sx={{ fontWeight: 700 }}>Management Login</Typography>

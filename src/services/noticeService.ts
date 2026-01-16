@@ -112,18 +112,22 @@ let mockNotices: Notice[] = generateMockNotices();
 const mapFirestoreNotice = (id: string, data: any): Notice => ({
   id,
   title: data.title,
-  description: data.description,
+  // Support both 'description' (code) and 'content' (README)
+  description: data.description || data.content || '',
   category: data.category,
   type: data.type,
   startDate: data.startDate?.toDate() || new Date(),
   endDate: data.endDate?.toDate() || new Date(),
-  fileUrl: data.fileUrl,
+  // Support both 'fileUrl' (code) and 'mediaUrl' (README)
+  fileUrl: data.fileUrl || data.mediaUrl,
   fileName: data.fileName,
   fileType: data.fileType,
   isPinned: data.isPinned || false,
+  isActive: data.isActive !== undefined ? data.isActive : true,
   createdAt: data.createdAt?.toDate() || new Date(),
   updatedAt: data.updatedAt?.toDate() || new Date(),
-  createdBy: data.createdBy,
+  // Support both 'createdBy' (code) and 'postedBy' (README)
+  createdBy: data.createdBy || data.postedBy || 'faculty@university.edu',
 });
 
 export const createNotice = async (
@@ -144,6 +148,7 @@ export const createNotice = async (
     fileName: fileData?.fileName,
     fileType: fileData?.fileType,
     isPinned: false,
+    isActive: true, // Default to true as per README
     createdAt: now,
     updatedAt: now,
     createdBy,

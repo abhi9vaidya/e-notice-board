@@ -5,8 +5,9 @@ export const isNoticeActive = (notice: Notice): boolean => {
   const now = new Date();
   const start = startOfDay(notice.startDate);
   const end = endOfDay(notice.endDate);
-  
+
   return (
+    (notice.isActive !== false) &&
     (isAfter(now, start) || isEqual(now, start)) &&
     (isBefore(now, end) || isEqual(now, end))
   );

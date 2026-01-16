@@ -13,6 +13,7 @@ export interface Notice {
   fileName?: string;
   fileType?: string;
   isPinned: boolean;
+  isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
